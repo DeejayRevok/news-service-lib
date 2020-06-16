@@ -1,6 +1,9 @@
 # news-service-lib
 News service tools library
 
+![News Service Lib](https://github.com/DeejayRevok/news-service-lib/workflows/News%20Service%20Lib/badge.svg?branch=develop)
+[![codecov](https://codecov.io/gh/DeejayRevok/news-service-lib/branch/develop/graph/badge.svg?token=Zd2w3NwCH3)](https://codecov.io/gh/DeejayRevok/news-service-lib)
+
 #### Installation
 Inside the application folder run:
 ```

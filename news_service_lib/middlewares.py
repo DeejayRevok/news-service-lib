@@ -24,6 +24,8 @@ async def uaa_auth_middleware(app: Application, handler: Callable):
         jwt_token = request.headers.get('X-API-Key', None)
         if not jwt_token:
             jwt_token = request.cookies.get('JWT_TOKEN', None)
+            if jwt_token:
+                jwt_token = 'Bearer '+jwt_token
         if jwt_token:
             request.user = await app['uaa_service'].validate_token(jwt_token)
         return await handler(request)

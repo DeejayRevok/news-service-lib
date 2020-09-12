@@ -10,3 +10,4 @@ coverage==5.0.3
 pyjwt==1.7.1
 requests==2.23.0
 asynctest==0.13.0
+aiohttp-cors==0.7.0

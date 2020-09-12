@@ -5,8 +5,10 @@ import os
 from argparse import ArgumentParser
 from typing import Any, Dict, Callable
 
+import aiohttp_cors
 from aiohttp.web import run_app
 from aiohttp.web_app import Application
+from aiohttp.web_urldispatcher import StaticResource
 from aiohttp_apispec import setup_aiohttp_apispec
 from elasticapm import Client
 from elasticapm.middleware import ElasticAPM
@@ -97,6 +99,18 @@ def finish_server_startup(app: Application, api_version: str) -> Application:
         )
 
     initialize_apm(app)
+
+    cors = aiohttp_cors.setup(app, defaults={
+        "*": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers="*",
+            allow_headers="*",
+            allow_methods="*"
+        )
+    })
+    for route in list(app.router.routes()):
+        if not isinstance(route.resource, StaticResource):
+            cors.add(route)
 
     return app
 

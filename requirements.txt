@@ -11,3 +11,4 @@ pyjwt==1.7.1
 requests==2.23.0
 asynctest==0.13.0
 aiohttp-cors==0.7.0
+pika==1.1.0

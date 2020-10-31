@@ -15,7 +15,7 @@ class SQLFilterParser(FilterParser):
     """
 
     @staticmethod
-    def parse_match(key: Column, value: Any) -> dict:
+    def parse_match(key: Column, value: Any) -> List[BinaryExpression]:
         """
         Get the unique filter query with the specified value
 
@@ -26,7 +26,7 @@ class SQLFilterParser(FilterParser):
         Returns: SQL binary expression
 
         """
-        return key == value
+        return [key == value]
 
     @staticmethod
     def parse_range(key: Column, upper: Any = None, lower: Any = None) -> List[BinaryExpression]:

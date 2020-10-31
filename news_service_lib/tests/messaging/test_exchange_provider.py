@@ -1,12 +1,15 @@
 """
 Exchange provider tests module
 """
+from logging import getLogger
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
 from pika.exceptions import AMQPConnectionError
 
 from ...messaging.exchange_provider import ExchangeProvider
+
+logger = getLogger()
 
 
 class TestExchangeProvider(TestCase):
@@ -24,7 +27,7 @@ class TestExchangeProvider(TestCase):
         Set up the provider instance to test
         """
         self.provider = ExchangeProvider(self.TEST_HOST, self.TEST_PORT, self.TEST_USER, self.TEST_PASSWORD,
-                                         self.TEST_EXCHANGE)
+                                         self.TEST_EXCHANGE, logger)
 
     @patch('news_service_lib.messaging.exchange_provider.ConnectionParameters')
     @patch('news_service_lib.messaging.exchange_provider.PlainCredentials')

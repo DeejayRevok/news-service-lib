@@ -1,10 +1,13 @@
 """
 Exchange consumer unit tests module
 """
+from logging import getLogger
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 from ...messaging.exchange_consumer import ExchangeConsumer
+
+logger = getLogger()
 
 
 class TestExchangeConsumer(TestCase):
@@ -24,7 +27,7 @@ class TestExchangeConsumer(TestCase):
         """
         self.callback = MagicMock()
         self.consumer = ExchangeConsumer(self.TEST_HOST, self.TEST_PORT, self.TEST_USER, self.TEST_PASSWORD,
-                                         self.TEST_EXCHANGE, self.TEST_QUEUE_NAME, self.callback)
+                                         self.TEST_EXCHANGE, self.TEST_QUEUE_NAME, self.callback, logger)
 
     @patch('news_service_lib.messaging.exchange_provider.ConnectionParameters')
     @patch('news_service_lib.messaging.exchange_provider.PlainCredentials')

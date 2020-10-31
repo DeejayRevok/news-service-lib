@@ -2,10 +2,13 @@
 Exchange publisher tests module
 """
 import json
+from logging import getLogger
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from infrastructure.messaging.exchange_publisher import ExchangePublisher
+from ...messaging.exchange_publisher import ExchangePublisher
+
+logger = getLogger()
 
 
 class TestExchangePublisher(TestCase):
@@ -24,11 +27,11 @@ class TestExchangePublisher(TestCase):
         Set up the publisher instance to test
         """
         self.publisher = ExchangePublisher(self.TEST_HOST, self.TEST_PORT, self.TEST_USER, self.TEST_PASSWORD,
-                                           self.TEST_EXCHANGE)
+                                           self.TEST_EXCHANGE, logger)
 
-    @patch('infrastructure.messaging.exchange_provider.ConnectionParameters')
-    @patch('infrastructure.messaging.exchange_provider.PlainCredentials')
-    @patch('infrastructure.messaging.exchange_provider.BlockingConnection')
+    @patch('news_service_lib.messaging.exchange_provider.ConnectionParameters')
+    @patch('news_service_lib.messaging.exchange_provider.PlainCredentials')
+    @patch('news_service_lib.messaging.exchange_provider.BlockingConnection')
     def test_publish(self, connection_mock, _, __):
         """
         Test publishing a message calls basic publish on the channel with the configured exchange and

@@ -5,11 +5,11 @@ from logging import Logger
 from sqlite3 import IntegrityError
 from typing import List, Iterator, Any
 
-from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import DeclarativeMeta
-from sqlalchemy.orm import sessionmaker, Query
+from sqlalchemy.orm import Query, Session
 from sqlalchemy.sql.elements import BinaryExpression
 
+from ..sql import SqlSessionProvider
 from ..exceptions import StorageIntegrityError, StorageError
 from ..sort_direction import SortDirection
 from ..filter import Filter, MatchFilter
@@ -22,21 +22,17 @@ class SqlStorage(Storage):
     SQL storage client implementation
     """
 
-    MYSQL_URL = 'mysql://{user}:{password}@{host}:{port}/{database}'
-
-    def __init__(self, engine: Engine, model: DeclarativeMeta, logger: Logger):
+    def __init__(self, session_provider: SqlSessionProvider, model: DeclarativeMeta, logger: Logger):
         """
         Database client initializer
 
         Args:
-            engine
+            session_provider: SQLAlchemy sessions manager
             logger: logger instance to use
         """
         self._logger = logger
         self._model = model
-        self._engine = engine
-        session_maker = sessionmaker(bind=self._engine)
-        self._session = session_maker()
+        self._session_provider = session_provider
 
     def save(self, model_instance: DeclarativeMeta) -> Any:
         """
@@ -49,16 +45,13 @@ class SqlStorage(Storage):
 
         """
         try:
-            self._session.add(model_instance)
-            self._session.commit()
-            self._session.flush()
-            return model_instance
+            with self._session_provider(read_only=False) as session:
+                session.add(model_instance)
+                return model_instance
         except IntegrityError as interr:
-            self.rollback()
             self._logger.error(f'Integrity error trying to save {model_instance}')
             raise StorageIntegrityError(str(interr)) from interr
         except Exception as ex:
-            self.rollback()
             self._logger.error(f'Error trying to save {model_instance}')
             raise StorageError(str(ex))
 
@@ -72,13 +65,14 @@ class SqlStorage(Storage):
                 raise AttributeError(
                     f'{model.__name__} has not the {filter_key} property')
 
-    def _get_all(self, filters: List[Filter] = None,
+    def _get_all(self, session: Session,
+                 filters: List[Filter] = None,
                  sort_key: str = None,
                  sort_direction: SortDirection = None) -> Query:
         if not filters:
             filters = list()
 
-        query = self._session.query(self._model)
+        query = session.query(self._model)
 
         if filters:
             self._parse_keys(self._model, filters)
@@ -97,22 +91,18 @@ class SqlStorage(Storage):
     def get(self, filters: List[Filter] = None,
             sort_key: str = None,
             sort_direction: SortDirection = None) -> Iterator[DeclarativeMeta]:
-        return self._get_all(filters=filters)
+        with self._session_provider() as session:
+            return self._get_all(session, filters=filters)
 
     def get_one(self, filters: List[Filter] = None) -> Any:
-        return self._get_all(filters=filters).first()
+        with self._session_provider() as session:
+            return self._get_all(session, filters=filters).first()
 
     def delete(self, identifier: Any):
-        primary_key = self._model.primary_key.columns.values()[0].name
         try:
-            self._get_all(filters=[MatchFilter(primary_key, identifier)]).delete()
+            with self._session_provider(read_only=False) as session:
+                primary_key = self._model.primary_key.columns.values()[0].name
+                self._get_all(session, filters=[MatchFilter(primary_key, identifier)]).delete()
         except Exception as ex:
-            self.rollback()
             self._logger.error(f'Error trying to delete the {self._model.__class__.__name__} with id {identifier}')
             raise StorageError(str(ex))
-
-    def rollback(self):
-        """
-        Perform a rollback operation for the current storage session
-        """
-        self._session.rollback()

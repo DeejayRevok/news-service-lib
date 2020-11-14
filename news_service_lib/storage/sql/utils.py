@@ -1,20 +1,7 @@
-from enum import Enum
-
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import Engine, create_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
-
-class SqlEngineType(Enum):
-    """
-    Type of SQL engine
-    """
-    MYSQL = 'mysql://{user}:{password}@{host}:{port}/{database}'
-    SQLITE = 'sqlite:///:memory:'
-
-    @property
-    def uri(self) -> str:
-        return self.value
+from .engine_type import SqlEngineType
 
 
 def init_sql_db(base: DeclarativeMeta, engine: Engine):

@@ -4,8 +4,9 @@ from unittest import TestCase
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
+from news_service_lib.storage.sql import SqlSessionProvider
 from ...storage.implementation import SqlStorage
-from ...storage.sql_utils import create_sql_engine, SqlEngineType, init_sql_db
+from ...storage.sql import create_sql_engine, SqlEngineType, init_sql_db
 
 LOGGER = getLogger()
 BASE = declarative_base()
@@ -35,7 +36,8 @@ class TestSQLStorage(TestCase):
         """
         test_engine = create_sql_engine(SqlEngineType.SQLITE)
         init_sql_db(BASE, test_engine)
-        self.client = SqlStorage(test_engine, TestModel, LOGGER)
+        session_provider = SqlSessionProvider(test_engine)
+        self.client = SqlStorage(session_provider, TestModel, LOGGER)
 
     def test_save(self):
         """

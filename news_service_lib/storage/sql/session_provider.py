@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
@@ -38,3 +38,11 @@ class SqlSessionProvider:
             self._session.close()
         if exc_val:
             raise exc_val
+
+    @property
+    def query_property(self):
+        return self._session_factory.query_property()
+
+    @query_property.setter
+    def query_property(self, value: Any):
+        raise ValueError('The property query_property is not writable')

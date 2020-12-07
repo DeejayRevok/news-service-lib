@@ -1,3 +1,6 @@
+"""
+SQL utilities module
+"""
 from sqlalchemy.engine import Engine, create_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta
 

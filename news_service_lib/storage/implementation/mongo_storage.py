@@ -99,6 +99,15 @@ class MongoStorage(Storage, StorageWatcher):
 
     @staticmethod
     def _parse_filters(filters: List[Filter]) -> dict:
+        """
+        Parse the given filters to a dictionary query
+
+        Args:
+            filters: filters to be parsed
+
+        Returns: query resulting of parsing the filters
+
+        """
         aggregated_query = {}
         if filters is not None and len(filters) > 0:
             for filter_instance in filters:

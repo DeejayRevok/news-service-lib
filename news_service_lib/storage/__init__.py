@@ -1,3 +1,6 @@
+"""
+Storage initialization module
+"""
 from logging import Logger
 
 from .implementation.sql_storage import SqlStorage

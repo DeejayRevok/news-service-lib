@@ -1,3 +1,6 @@
+"""
+MongoDB utilities module
+"""
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 

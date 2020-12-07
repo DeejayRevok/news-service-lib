@@ -1,3 +1,6 @@
+"""
+Engine types module
+"""
 from enum import Enum
 
 

@@ -57,6 +57,14 @@ class SqlStorage(Storage):
 
     @staticmethod
     def _parse_keys(model: type(DeclarativeMeta), filters: List[Filter]) -> List[BinaryExpression]:
+        """
+        Parse the input filter keys to its SQL alchemy representation
+
+        Args:
+            model: model to parse the filters for
+            filters: filters to parse
+
+        """
         for filter_instance in filters:
             filter_key = filter_instance.key
             if hasattr(model, filter_key):
@@ -69,6 +77,18 @@ class SqlStorage(Storage):
                  filters: List[Filter] = None,
                  sort_key: str = None,
                  sort_direction: SortDirection = None) -> Query:
+        """
+        Get all the entities which matches the input parameters
+
+        Args:
+            session: session used to query the entities
+            filters: filters to apply
+            sort_key: key used to sort the results
+            sort_direction: sorting direction
+
+        Returns: filtered entities
+
+        """
         if not filters:
             filters = list()
 
@@ -91,14 +111,41 @@ class SqlStorage(Storage):
     def get(self, filters: List[Filter] = None,
             sort_key: str = None,
             sort_direction: SortDirection = None) -> Iterator[DeclarativeMeta]:
+        """
+        Get the entities which matches the given filters
+
+        Args:
+            filters: filters to be applied
+            sort_key: key to sort the results
+            sort_direction: sorting direction
+
+        Returns: entities which matches the given filters
+
+        """
         with self._session_provider() as session:
             return self._get_all(session, filters=filters)
 
     def get_one(self, filters: List[Filter] = None) -> Any:
+        """
+        Get one entity which matches the given filter
+
+        Args:
+            filters: filtes to apply
+
+        Returns: entity which matches the given filters
+
+        """
         with self._session_provider() as session:
             return self._get_all(session, filters=filters).first()
 
     def delete(self, identifier: Any):
+        """
+        Delete the entity identified by the given identifier
+
+        Args:
+            identifier: identifier of the entity to delete
+
+        """
         try:
             with self._session_provider(read_only=False) as session:
                 primary_key = self._model.primary_key.columns.values()[0].name

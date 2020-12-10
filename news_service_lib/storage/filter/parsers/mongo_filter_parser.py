@@ -38,8 +38,8 @@ class MongoFilterParser(FilterParser):
 
         """
         range_query = {}
-        if lower:
+        if lower is not None:
             range_query['$gt'] = lower
-        if upper:
+        if upper is not None:
             range_query['$lt'] = upper
         return {key: range_query}

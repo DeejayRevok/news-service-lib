@@ -180,7 +180,7 @@ class CustomDateTime(Scalar):
     @staticmethod
     def serialize(dt: Any) -> str:
         """
-        Serialize the input date time like object
+        Serialize the input date time or float like object
 
         Args:
             dt: input date time representation
@@ -189,7 +189,10 @@ class CustomDateTime(Scalar):
 
         """
         if not isinstance(dt, str):
-            return dt.isoformat()
+            if isinstance(dt, float):
+                return datetime.datetime.fromtimestamp(dt).strftime(CustomDateTime.DATE_FORMAT)
+            elif isinstance(dt, datetime.datetime):
+                return dt.strftime(CustomDateTime.DATE_FORMAT)
         else:
             return dt
 

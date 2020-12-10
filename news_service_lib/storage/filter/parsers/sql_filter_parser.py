@@ -42,8 +42,8 @@ class SQLFilterParser(FilterParser):
 
         """
         expressions = list()
-        if lower:
+        if lower is not None:
             expressions.append(key > lower)
-        if upper:
+        if upper is not None:
             expressions.append(key < upper)
         return expressions

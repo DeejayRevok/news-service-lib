@@ -1,4 +1,3 @@
-import ast
 import asyncio
 import datetime
 from functools import partial
@@ -205,7 +204,7 @@ class CustomDateTime(Scalar):
         Returns: parsed date time
 
         """
-        if isinstance(node, ast.StringValue):
+        if isinstance(node.value, str):
             return datetime.datetime.strptime(node.value, CustomDateTime.DATE_FORMAT)
 
     @staticmethod
@@ -239,7 +238,7 @@ def error_formatter(error: Exception, logger: Logger) -> dict:
     return dict(error=error.__class__.__name__, detail=str(error))
 
 
-def graph_attach_mod(app, *, route_path='/graphql', route_name='graphql', **kwargs):
+def graph_attach_mod(app: Application, *, route_path='/graphql', route_name='graphql', **kwargs):
     """
     Attach the Graphql view to the input aiohttp app avoiding cors problems
 

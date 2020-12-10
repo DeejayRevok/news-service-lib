@@ -19,7 +19,7 @@ jobs:
       - name: Lint and check score
         run: pylint-fail-under --fail_under 9  --ignore=README.md,requirements.txt ./*
       - name: Test with unittest
-        run: coverage run --source ./news_service_lib --branch --omit=*__init__**,**tests** -m unittest discover -v news_service_lib/tests -t .
+        run: coverage run --source ./news_service_lib --branch --omit=*__init__**,**tests**,**graphql/model** -m unittest discover -v news_service_lib/tests -t .
       - name: Check test coverage
         run: coverage report  --fail-under=80
       - name: Generate coverage report

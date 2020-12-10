@@ -26,6 +26,7 @@ class TestGraphQLUtils(TestCase):
         """
         self.assertIsInstance(CustomDateTime.serialize(datetime.datetime.now()), str)
         self.assertIsInstance(CustomDateTime.serialize('test'), str)
+        self.assertIsInstance(CustomDateTime.serialize(datetime.datetime.now().timestamp()), str)
 
     def test_parse_value_datetime(self):
         """

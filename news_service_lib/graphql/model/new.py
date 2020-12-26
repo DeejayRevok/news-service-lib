@@ -19,3 +19,4 @@ class New(ObjectType):
     entities = GraphList(NamedEntity, description='New named entities')
     summary = String(description='New content summary')
     sentiment = Float(description="New sentiment intensity")
+    noun_chunk = GraphList(String, description='New noun chunks')

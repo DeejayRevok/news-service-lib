@@ -19,6 +19,7 @@ class New:
     date: float
     hydrated: bool = False
     entities: List[NamedEntity] = field(default_factory=list)
+    noun_chunks: List[str] = field(default_factory=list)
     summary: str = None
     sentiment: float = 0.0
 
@@ -37,6 +38,7 @@ class New:
         yield 'summary', self.summary
         yield 'sentiment', self.sentiment
         yield 'entities', [dict(entity) for entity in self.entities]
+        yield 'noun_chunks', self.noun_chunks
 
     def dto(self, render_date_format: str) -> dict:
         """
@@ -55,4 +57,5 @@ class New:
                     hydrated=self.hydrated,
                     summary=self.summary,
                     sentiment=self.sentiment,
-                    entities=[dict(entity) for entity in self.entities])
+                    entities=[dict(entity) for entity in self.entities],
+                    noun_chunks=self.noun_chunks)

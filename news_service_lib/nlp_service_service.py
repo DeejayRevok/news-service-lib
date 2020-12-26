@@ -4,7 +4,7 @@ Module used to communicate with the NLP service
 from aiohttp import ClientSession
 from aiohttp.web_exceptions import HTTPUnauthorized, HTTPInternalServerError
 from news_service_lib import get_system_auth_token
-from .models import New, NamedEntity, NLPDoc
+from .models import New, NLPDoc
 
 
 class NlpServiceService:
@@ -72,7 +72,8 @@ class NlpServiceService:
                     if response.status == 200:
                         response_content = await response.json()
                         return NLPDoc(sentences=response_content['sentences'],
-                                      named_entities=response_content['named_entities'])
+                                      named_entities=response_content['named_entities'],
+                                      noun_chunks=response_content['noun_chunks'])
                     if response.status == 401:
                         response_json = await response.json()
                         raise HTTPUnauthorized(reason=response_json['detail'])

@@ -12,6 +12,7 @@ class NLPDoc:
     """
     sentences: list
     named_entities: List[tuple]
+    noun_chunks: List[str]
 
     def __iter__(self) -> iter:
         """
@@ -22,3 +23,4 @@ class NLPDoc:
         """
         yield 'sentences', self.sentences
         yield 'named_entities', self.named_entities
+        yield 'noun_chunks', self.noun_chunks

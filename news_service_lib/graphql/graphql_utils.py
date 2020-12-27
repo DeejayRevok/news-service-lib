@@ -2,7 +2,7 @@ import asyncio
 import datetime
 from functools import partial
 from logging import Logger
-from typing import Callable, Any
+from typing import Callable, Any, List
 
 from aiohttp.web_app import Application
 from aiohttp.web_exceptions import HTTPUnauthorized
@@ -261,7 +261,7 @@ def graph_attach_mod(app: Application, *, route_path='/graphql', route_name='gra
             app.router.add_route(method, '/graphiql', view, name='graphiql')
 
 
-def setup_graphql_routes(app: Application, schema: Schema, logger: Logger):
+def setup_graphql_routes(app: Application, schema: Schema, logger: Logger, middlewares: List[object] = None):
     """
     Add the graphql routes to the specified application
 
@@ -269,8 +269,11 @@ def setup_graphql_routes(app: Application, schema: Schema, logger: Logger):
         app: application to add routes
         schema: graphene schema which describes the graphql queries and mutations
         logger: logger instance used by the different graphene utilities functions
+        middlewares: list of graphql middleware functions
 
     """
+    if not middlewares:
+        middlewares = list()
     graph_attach_mod(app,
                      route_path='/graphql',
                      schema=schema,
@@ -278,7 +281,8 @@ def setup_graphql_routes(app: Application, schema: Schema, logger: Logger):
                      graphiql_template=GRAPHIQL_JWT_TEMPLATE,
                      executor=AsyncioExecutor(loop=asyncio.get_event_loop()),
                      enable_async=True,
-                     error_formatter=partial(error_formatter, logger=logger))
+                     error_formatter=partial(error_formatter, logger=logger),
+                     middleware=middlewares)
 
 
 def login_required(func: Callable):

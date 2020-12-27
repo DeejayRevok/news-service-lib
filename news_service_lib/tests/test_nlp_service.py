@@ -18,7 +18,8 @@ class TestNLPService(TestCase):
     TEST_PROTOCOL = 'test_protocol'
     TEST_ERROR_DETAIL = 'test_detail'
     TEST_NLP_DOC = NLPDoc(sentences=['test_sentence_1', 'test_sentence_2'],
-                          named_entities=[('test_entity_text', 'test_entity_type')])
+                          named_entities=[('test_entity_text', 'test_entity_type')],
+                          noun_chunks=['test_noun_chunk'])
 
     @patch('news_service_lib.nlp_service_service.get_system_auth_token')
     @async_patch('aiohttp.ClientSession.put')

@@ -88,3 +88,11 @@ class SqlSessionProvider:
         Avoids altering the state of the session provider
         """
         raise ValueError('The property query_property is not writable')
+
+    def clear_session(self):
+        """
+        Clear the current context database session
+        """
+        session = self()._session
+        session.rollback()
+        session.close()

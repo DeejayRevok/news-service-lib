@@ -2,6 +2,7 @@
 SQL utils tests module
 """
 from unittest import TestCase
+from unittest.mock import patch
 
 from sqlalchemy import Column, Integer, inspect, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -53,9 +54,9 @@ class TestSQLUtils(TestCase):
                                                         port=self.test_port,
                                                         database=self.test_database))
 
-    def test_init_sql_db(self):
+    def test_init_sql_db_no_alembic(self):
         """
-        Test initializing the db creates the tables defined in the base schema
+        Test initializing the db without alembic creates the tables defined in the base schema
         """
         engine = self._set_up()
         init_sql_db(BASE, engine)
@@ -64,6 +65,33 @@ class TestSQLUtils(TestCase):
 
         tables = inspector.get_table_names(schema=schemas[0])
         self.assertEqual(tables[0], 'test')
+
+    @patch('news_service_lib.storage.sql.utils.command')
+    @patch('news_service_lib.storage.sql.utils.Config')
+    def test_init_sql_db_alembic_no_table(self, _, alembic_command):
+        """
+        Test initializing the db wiht alembic creates the tables defined in the base schema and run the stamp migrations
+        """
+        engine = self._set_up()
+        init_sql_db(BASE, engine, alembic_ini_path='test')
+        inspector = inspect(engine)
+        schemas = inspector.get_schema_names()
+
+        tables = inspector.get_table_names(schema=schemas[0])
+        self.assertEqual(tables[0], 'test')
+        alembic_command.stamp.assert_called_once()
+
+    @patch('news_service_lib.storage.sql.utils.command')
+    @patch('news_service_lib.storage.sql.utils.Config')
+    def test_init_sql_db_alembic_table(self, _, alembic_command):
+        """
+        Test initializing the db already initialized runs the upgrade migrations
+        """
+        engine = self._set_up()
+        init_sql_db(BASE, engine)
+        init_sql_db(BASE, engine, alembic_ini_path='test')
+
+        alembic_command.upgrade.assert_called_once()
 
     def test_healthcheck_success(self):
         """

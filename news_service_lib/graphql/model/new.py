@@ -12,6 +12,7 @@ class New(ObjectType):
     New graphql model implementation
     """
     title = String(description="New title unique for all the news")
+    url = String(description="New html url")
     content = String(description="New full content")
     source = String(description="New source name")
     date = CustomDateTime(description="New publish date and time")

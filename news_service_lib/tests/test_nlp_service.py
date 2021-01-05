@@ -12,7 +12,8 @@ from news_service_lib.models import New, NamedEntity, NLPDoc
 
 
 class TestNLPService(TestCase):
-    TEST_NEW = New(title='Test_title', content='Test_content', date=112341234.0, source='Test_source')
+    TEST_NEW = New(title='Test_title', url='http://testurl.test', content='Test_content', date=112341234.0,
+                   source='Test_source')
     TEST_HOST = 'test_host'
     TEST_PORT = '0'
     TEST_PROTOCOL = 'test_protocol'

@@ -14,6 +14,7 @@ class New:
     New model
     """
     title: str
+    url: str
     content: str
     source: str
     date: float
@@ -31,6 +32,7 @@ class New:
 
         """
         yield 'title', self.title
+        yield 'url', self.url
         yield 'content', self.content
         yield 'source', self.source
         yield 'date', self.date
@@ -51,6 +53,7 @@ class New:
 
         """
         return dict(title=self.title,
+                    url=self.url,
                     content=self.content,
                     source=self.source,
                     date=datetime.fromtimestamp(self.date).strftime(render_date_format),

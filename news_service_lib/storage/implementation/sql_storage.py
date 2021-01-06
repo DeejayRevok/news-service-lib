@@ -5,6 +5,7 @@ from logging import Logger
 from sqlite3 import IntegrityError
 from typing import List, Iterator, Any
 
+from sqlalchemy import inspect
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import Query, Session
 from sqlalchemy.sql.elements import BinaryExpression
@@ -148,7 +149,7 @@ class SqlStorage(Storage):
         """
         try:
             with self._session_provider(read_only=False) as session:
-                primary_key = self._model.primary_key.columns.values()[0].name
+                primary_key = inspect(self._model).primary_key[0].name
                 self._get_all(session, filters=[MatchFilter(primary_key, identifier)]).delete()
         except Exception as ex:
             self._logger.error(f'Error trying to delete the {self._model.__class__.__name__} with id {identifier}')

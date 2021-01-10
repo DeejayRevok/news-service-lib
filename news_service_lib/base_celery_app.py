@@ -39,7 +39,7 @@ class BaseCeleryApp:
             config_dict['task_default_queue'] = task_queue_name
         if broker_config:
             broker_url = self.BASE_BROKER_URL.format(**broker_config)
-            config_dict['broker_url'] = broker_url,
+            config_dict['broker_url'] = broker_url
             config_dict['result_backend'] = 'rpc://'
         if worker_concurrency:
             config_dict['worker_concurrency'] = worker_concurrency

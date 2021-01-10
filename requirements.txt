@@ -19,3 +19,4 @@ mongomock==3.19.0
 graphene==2.1.8
 aiohttp-graphql==1.1.0
 alembic==1.4.3
+celery==4.4.2

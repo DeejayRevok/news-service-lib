@@ -37,7 +37,7 @@ class ExchangeConsumer(ExchangeProvider):
         Initialize the consumer exchange and queue
         """
         super().initialize()
-        self._channel.queue_declare(queue=self._queue_name, exclusive=True)
+        self._channel.queue_declare(queue=self._queue_name, exclusive=False)
         self._channel.queue_bind(exchange=self._exchange, queue=self._queue_name)
 
     def __call__(self):

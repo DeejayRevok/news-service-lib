@@ -41,7 +41,7 @@ class TestExchangeConsumer(TestCase):
         self.assertIsNotNone(self.consumer._channel)
         self.consumer._channel.exchange_declare.assert_called_with(exchange=self.TEST_EXCHANGE, exchange_type='fanout',
                                                                    durable=True)
-        self.consumer._channel.queue_declare.assert_called_with(queue=self.TEST_QUEUE_NAME, exclusive=True)
+        self.consumer._channel.queue_declare.assert_called_with(queue=self.TEST_QUEUE_NAME, exclusive=False)
         self.consumer._channel.queue_bind.assert_called_with(exchange=self.TEST_EXCHANGE, queue=self.TEST_QUEUE_NAME)
         self.consumer._channel.basic_consume.assert_called_with(queue=self.TEST_QUEUE_NAME,
                                                                 on_message_callback=self.callback,
